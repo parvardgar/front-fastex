@@ -1,0 +1,50 @@
+import { createFileRoute } from "@tanstack/react-router"
+import { z } from "zod"
+
+import { ProductListPage } from "@/features/products/components/product-list-page"
+
+
+const productsSearchSchema = z.object({
+    page: z.number().catch(1),
+
+    sort: z
+        .enum([
+            "featured",
+            "newest",
+            "price_asc",
+            "price_desc",
+            "rating",
+        ])
+        .catch("featured"),
+
+    view: z
+        .enum([
+            "grid",
+            "list",
+        ])
+        .catch("grid"),
+
+    categories: z.array(z.string()).catch([]),
+
+    brands: z.array(z.string()).catch([]),
+
+    ratings: z.array(z.number()).catch([]),
+
+    availability: z
+        .array(
+            z.enum([
+                "in_stock",
+                "out_of_stock",
+            ]),
+        )
+        .default([]),
+
+    minPrice: z.number().catch(0),
+
+    maxPrice: z.number().catch(0),
+})
+
+export const Route = createFileRoute("/(public)/products/")({
+    validateSearch: productsSearchSchema,
+    component: ProductListPage,
+})
